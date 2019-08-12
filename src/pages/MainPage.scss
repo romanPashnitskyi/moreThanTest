@@ -1,0 +1,35 @@
+$font-stack: Darker Grotesque, sans-serif;
+$font-size: 30px;
+
+.main {
+  font-family: $font-stack;
+  font-size: $font-size;
+  text-align: center;
+}
+
+input[type=submit], button {
+  color: limegreen;
+  background-color: #000;
+  border: 1px solid limegreen;
+}
+
+input[type=text] {
+  margin-bottom: 5px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  padding-top: 5px;
+}
+
+.button {
+  font-family: $font-stack;
+  font-size: $font-size;
+}
+
+.message {
+  text-align: center;
+}
+
+
