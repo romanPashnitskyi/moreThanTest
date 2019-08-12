@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux';
 
 import NavigationBar from '../components/NavigationBar'
+import {fetchData} from '../actions/mainAction';
 import './MainPage.scss'
 
 class MainPage extends Component {
@@ -8,9 +10,7 @@ class MainPage extends Component {
     super(...args);
 
     this.state = {
-      name: '',
-      message: false,
-      error: null
+      name: ''
     };
 
     this.changeInput = this.changeInput.bind(this);
@@ -20,6 +20,7 @@ class MainPage extends Component {
     return event => {
       const { value } = event.target;
 
+      this.props.main.name = value;
       this.setState({ [field]: value });
     };
   }
@@ -27,31 +28,7 @@ class MainPage extends Component {
   handleSubmit = (evt) => {
     evt.preventDefault();
 
-    fetch(`http://localhost:8081/api/user`, {
-      method: 'POST',
-      body: JSON.stringify({
-        name: this.state.name
-      }),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(response  => {
-      if (!response.ok) {
-        this.setState({
-          error: true
-        })
-      }
-    }).then(response  => {
-      this.setState({
-        message: true
-      })
-    }).catch(error => console.log(error));
-
-    this.setState({
-      name: '',
-      error: null
-    });
+    this.props.fetchData(this.props.main.name, this.props.main.error, this.props.main.message);
   };
 
   render() {
@@ -60,7 +37,7 @@ class MainPage extends Component {
         <NavigationBar back='/third' forward='/second'/>
         <form className='form' onSubmit={this.handleSubmit}>
           <input type='text' required
-                 value={this.state.name}
+                 value={this.props.main.name}
                  placeholder='Username'
                  onChange={this.changeInput('name')} />
           <input type='submit'
@@ -69,8 +46,8 @@ class MainPage extends Component {
         </form>
         <div className='message'>
           {
-            (this.state.error && <p style={{color: 'red'}}>Error</p>) ||
-            (this.state.message && <p style={{color: 'limegreen'}}>User added!</p>)
+            (this.props.main.error && <p style={{color: 'red'}}>Error</p>) ||
+            (this.props.main.message && <p style={{color: 'limegreen'}}>User added!</p>)
           }
         </div>
       </div>
@@ -80,17 +57,16 @@ class MainPage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    app: state.app,
-    settings: state.settings
+    main: state.main
   }
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchData: (location, units) => {
-      dispatch(fetchData(location, units))
+    fetchData: (name, error, message) => {
+      dispatch(fetchData(name, error, message))
     }
   }
 };
 
-export default MainPage;
+export default connect(mapStateToProps, mapDispatchToProps)(MainPage);

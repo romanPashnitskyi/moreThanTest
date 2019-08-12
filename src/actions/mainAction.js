@@ -1,10 +1,13 @@
-export const fetchData = (evt) => {
-  evt.preventDefault();
+let data = {};
+
+export const fetchData = (name, error, message) => (dispatch) => {
+
+  data.name = name;
 
   fetch(`http://localhost:8081/api/user`, {
     method: 'POST',
     body: JSON.stringify({
-      name: this.state.name
+      name: name
     }),
     headers: {
       'Accept': 'application/json',
@@ -12,18 +15,19 @@ export const fetchData = (evt) => {
     }
   }).then(response  => {
     if (!response.ok) {
-      this.setState({
-        error: true
+      data.error = true;
+      dispatch({
+        type: 'FETCH_DATA_FULFILLED',
+        payload: data
       })
     }
   }).then(response  => {
-    this.setState({
-      message: true
+    data.message = true;
+    dispatch({
+      type: 'FETCH_DATA_FULFILLED',
+      payload: data
     })
   }).catch(error => console.log(error));
 
-  this.setState({
-    name: '',
-    error: null
-  });
+  data.error = null;
 };
